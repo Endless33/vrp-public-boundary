@@ -1,0 +1,468 @@
+openapi: 3.1.0
+
+info:
+  title: VRP Public Engineering API
+  version: 0.1.0
+  description: |
+    Public integration boundary for the VRP ecosystem.
+
+    This specification defines externally observable operations for
+    technical evaluation, validation, evidence retrieval, capability
+    discovery, and Pilot integration.
+
+    It does not expose the Protected Runtime, internal decision logic,
+    authority mechanisms, recovery algorithms, session migration
+    implementation, or proprietary mathematics.
+
+  contact:
+    name: VRP Engineering
+    email: jumpingvpn@proton.me
+
+servers:
+  - url: https://pilot.example.invalid/vrp/api/v1
+    description: Example Pilot endpoint. Not an active production service.
+
+tags:
+  - name: System
+    description: Public service metadata and health.
+  - name: Capabilities
+    description: Public capability discovery.
+  - name: Validation
+    description: Public validation request lifecycle.
+  - name: Evidence
+    description: Evidence metadata and retrieval references.
+
+paths:
+  /health:
+    get:
+      tags:
+        - System
+      operationId: getPublicHealth
+      summary: Retrieve public service health
+      description: |
+        Returns bounded public health information.
+
+        Internal runtime state, topology, protected counters, private
+        telemetry, and decision-engine details are never returned.
+      responses:
+        "200":
+          description: Public health response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicHealth"
+        "503":
+          description: Public service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+
+  /capabilities:
+    get:
+      tags:
+        - Capabilities
+      operationId: getPublicCapabilities
+      summary: Retrieve public capability declarations
+      description: |
+        Returns versioned capability identifiers available through the
+        public engineering boundary.
+
+        Capability declarations describe observable integration support.
+        They do not reveal implementation.
+      responses:
+        "200":
+          description: Public capability declaration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicCapabilities"
+        "503":
+          description: Capability service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+
+  /validation-requests:
+    post:
+      tags:
+        - Validation
+      operationId: createValidationRequest
+      summary: Submit a public validation request
+      description: |
+        Creates a validation request against an authorized Pilot or
+        evaluation environment.
+
+        The request describes the desired public scenario and expected
+        observable contract. It does not control internal runtime logic.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateValidationRequest"
+      responses:
+        "202":
+          description: Validation request accepted for processing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationRequestAccepted"
+        "400":
+          description: Invalid public request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+        "401":
+          description: Authorization required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+        "409":
+          description: Request conflicts with current public contract state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+        "429":
+          description: Public request limit reached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+
+  /validation-requests/{request_id}:
+    get:
+      tags:
+        - Validation
+      operationId: getValidationRequest
+      summary: Retrieve public validation status
+      parameters:
+        - $ref: "#/components/parameters/RequestID"
+      responses:
+        "200":
+          description: Public validation status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationStatus"
+        "404":
+          description: Validation request not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+
+  /validation-requests/{request_id}/verdict:
+    get:
+      tags:
+        - Validation
+      operationId: getValidationVerdict
+      summary: Retrieve final public validation verdict
+      parameters:
+        - $ref: "#/components/parameters/RequestID"
+      responses:
+        "200":
+          description: Final public verdict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicVerdict"
+        "404":
+          description: Validation request not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+        "409":
+          description: Final verdict is not available yet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+
+  /evidence/{evidence_id}:
+    get:
+      tags:
+        - Evidence
+      operationId: getEvidenceReference
+      summary: Retrieve public evidence metadata
+      description: |
+        Returns redacted, bounded evidence metadata.
+
+        Protected runtime traces, internal state transitions, customer
+        secrets, private telemetry, and proprietary decision inputs are
+        never returned.
+      parameters:
+        - name: evidence_id
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+            pattern: "^[A-Za-z0-9._:-]+$"
+      responses:
+        "200":
+          description: Public evidence metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvidenceReference"
+        "404":
+          description: Evidence reference not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicError"
+
+components:
+  parameters:
+    RequestID:
+      name: request_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    PublicHealth:
+      type: object
+      additionalProperties: false
+      required:
+        - schema
+        - status
+        - observed_at
+      properties:
+        schema:
+          type: string
+          const: vrp.health/v1
+        status:
+          type: string
+          enum:
+            - AVAILABLE
+            - DEGRADED
+            - UNAVAILABLE
+        observed_at:
+          type: string
+          format: date-time
+        boundary_version:
+          type: string
+          examples:
+            - "0.1.0"
+
+    PublicCapabilities:
+      type: object
+      additionalProperties: false
+      required:
+        - schema
+        - boundary_version
+        - capabilities
+      properties:
+        schema:
+          type: string
+          const: vrp.capabilities/v1
+        boundary_version:
+          type: string
+        capabilities:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+              - validation.request
+              - validation.status
+              - validation.verdict
+              - evidence.reference
+              - compatibility.metadata
+
+    CreateValidationRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - schema
+        - scenario
+        - client_request_id
+      properties:
+        schema:
+          type: string
+          const: vrp.validation-request/v1
+        client_request_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+        scenario:
+          type: string
+          enum:
+            - PUBLIC_CONTRACT_VALIDATION
+            - EVIDENCE_INTEGRITY_VALIDATION
+            - COMPATIBILITY_VALIDATION
+            - PILOT_ENVIRONMENT_VALIDATION
+        requested_capabilities:
+          type: array
+          maxItems: 32
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 128
+        metadata:
+          type: object
+          additionalProperties:
+            type:
+              - string
+              - number
+              - boolean
+          maxProperties: 32
+
+    ValidationRequestAccepted:
+      type: object
+      additionalProperties: false
+      required:
+        - schema
+        - request_id
+        - status
+        - accepted_at
+      properties:
+        schema:
+          type: string
+          const: vrp.validation-accepted/v1
+        request_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          const: ACCEPTED
+        accepted_at:
+          type: string
+          format: date-time
+
+    ValidationStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - schema
+        - request_id
+        - status
+        - updated_at
+      properties:
+        schema:
+          type: string
+          const: vrp.validation-status/v1
+        request_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+            - ACCEPTED
+            - RUNNING
+            - COMPLETED
+            - REJECTED
+            - FAILED
+        updated_at:
+          type: string
+          format: date-time
+        verdict_available:
+          type: boolean
+
+    PublicVerdict:
+      type: object
+      additionalProperties: false
+      required:
+        - schema
+        - request_id
+        - verdict
+        - completed_at
+      properties:
+        schema:
+          type: string
+          const: vrp.verdict/v1
+        request_id:
+          type: string
+          format: uuid
+        verdict:
+          type: string
+          enum:
+            - VERIFIED
+            - REJECTED
+            - INCONCLUSIVE
+        reason_code:
+          type: string
+          enum:
+            - CONTRACT_PRESERVED
+            - EVIDENCE_VERIFIED
+            - COMPATIBILITY_CONFIRMED
+            - INVALID_REQUEST
+            - INTEGRITY_FAILURE
+            - CONTRACT_VIOLATION
+            - INSUFFICIENT_EVIDENCE
+        completed_at:
+          type: string
+          format: date-time
+        evidence:
+          $ref: "#/components/schemas/EvidenceReference"
+
+    EvidenceReference:
+      type: object
+      additionalProperties: false
+      required:
+        - schema
+        - evidence_id
+        - digest
+        - created_at
+      properties:
+        schema:
+          type: string
+          const: vrp.evidence-reference/v1
+        evidence_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+        digest:
+          type: string
+          pattern: "^sha256:[a-f0-9]{64}$"
+        created_at:
+          type: string
+          format: date-time
+        media_type:
+          type: string
+          examples:
+            - application/vnd.vrp.evidence+json
+        retrieval_status:
+          type: string
+          enum:
+            - AVAILABLE
+            - RESTRICTED
+            - EXPIRED
+
+    PublicError:
+      type: object
+      additionalProperties: false
+      required:
+        - schema
+        - code
+        - message
+      properties:
+        schema:
+          type: string
+          const: vrp.error/v1
+        code:
+          type: string
+          enum:
+            - INVALID_REQUEST
+            - UNAUTHORIZED
+            - NOT_FOUND
+            - CONFLICT
+            - RATE_LIMITED
+            - SERVICE_UNAVAILABLE
+        message:
+          type: string
+          maxLength: 512
+        request_id:
+          type: string
+          format: uuid
