@@ -1,0 +1,6 @@
+{
+  "schema": "vrp.health/v1",
+  "status": "AVAILABLE",
+  "boundary_version": "0.1.0",
+  "observed_at": "2026-07-14T12:00:00Z"
+}
