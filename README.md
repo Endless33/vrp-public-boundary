@@ -2,84 +2,156 @@
 
 ## Overview
 
-This repository contains the public engineering boundary of the VRP (Veil Routing Protocol) ecosystem.
+The VRP Public Engineering Boundary defines the public engineering surface of the VRP (Veil Routing Protocol) ecosystem.
 
-It is intended for engineers, system architects, validation partners, and pilot participants who require a documented and reproducible integration surface without exposing the protected runtime implementation.
+This repository is intended for engineers, system architects, integration partners, researchers, and Pilot participants who require a documented, reproducible, and implementation-independent engineering interface.
+
+Its purpose is to enable technical evaluation, integration planning, and independent validation without exposing the Protected Runtime.
 
 ---
 
-## Repository Scope
+# Repository Scope
 
-Included:
+This repository may contain:
 
-- Engineering contracts
+- Public engineering documentation
 - Public SDK interfaces
+- Integration contracts
+- Public schemas
 - Validation specifications
-- Evidence formats
-- Integration documentation
-- Public APIs
-- Example client implementations
-- Pilot integration guides
+- Evidence specifications
+- API documentation
+- Reference implementations
+- Integration examples
+- Pilot preparation materials
+- Deployment guidance
+- Compatibility information
 
 ---
 
-## Not Included
+# Not Included
 
-This repository does **not** contain:
+This repository intentionally excludes:
 
 - Protected Runtime
 - Runtime decision engine
-- Authority algorithms
+- Authority engine
 - Recovery engine
-- Session migration implementation
-- Internal mathematics
-- Proprietary runtime logic
+- Session continuity implementation
+- Transport migration implementation
+- Replay protection implementation
+- Internal mathematical models
+- Proprietary algorithms
+- Internal state machines
+- Commercial runtime components
+- Customer-specific runtime profiles
 
 These components remain protected.
 
 ---
 
-## Purpose
+# Purpose
 
-The objective is to provide a stable engineering interface that allows independent validation, integration, and technical evaluation without exposing protected implementation details.
+The engineering boundary exists to separate public engineering knowledge from proprietary runtime implementation.
 
-The engineering boundary is public.
+External engineers should be able to understand:
 
-The runtime core is not.
+- how to integrate;
+- how to validate;
+- how to verify;
+- how to prepare for a Pilot deployment;
+
+without requiring access to the internal runtime implementation.
+
+Observable behavior may be public.
+
+Protected implementation remains protected.
 
 ---
 
-## Repository Structure
+# Repository Structure
 
 ```
 docs/
-sdk/
 api/
+sdk/
 contracts/
+schemas/
 examples/
 validation/
 evidence/
-schemas/
+pilot/
 ```
 
-Additional components will be introduced as the engineering boundary expands.
+The repository structure will continue to evolve as additional public engineering components become available.
 
 ---
 
-## Engineering Principles
+# Future Content
+
+Future updates may include:
+
+- public API specifications;
+- SDK interfaces;
+- JSON schemas;
+- validation workflows;
+- evidence specifications;
+- compatibility guides;
+- integration examples;
+- deployment checklists;
+- Pilot onboarding documentation;
+- engineering best practices;
+- versioned public contracts;
+- reference client implementations.
+
+Each public artifact will be evaluated to ensure it does not disclose Protected Runtime implementation details.
+
+---
+
+# Design Principles
+
+The engineering boundary follows several principles:
 
 - Reproducible
 - Verifiable
 - Deterministic
+- Versioned
+- Implementation Independent
 - Vendor Neutral
 - Continuity First
 
 ---
 
-## Status
+# Public Disclosure Policy
 
-Engineering Boundary
+Only engineering artifacts that are safe for public disclosure will be published in this repository.
 
-Initial Public Release
+Any document, interface, schema, example, or specification that could materially assist reconstruction of the Protected Runtime will remain private.
 
-Development Continues.
+---
+
+# Repository Status
+
+Current Release
+
+Engineering Boundary v0.1
+
+Status
+
+Public Preview
+
+The repository will continue to expand as new public engineering interfaces, contracts, documentation, SDK components, and validation materials become available.
+
+Development of the Protected Runtime continues independently.
+
+---
+
+# License
+
+The contents of this repository are subject to the accompanying LICENSE file.
+
+Publication of public engineering artifacts does not grant access to the Protected Runtime or any proprietary implementation.
+
+---
+
+Engineering continues.
