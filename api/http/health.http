@@ -1,0 +1,4 @@
+### Public Health
+
+GET https://pilot.example.invalid/vrp/api/v1/health
+Accept: application/json
