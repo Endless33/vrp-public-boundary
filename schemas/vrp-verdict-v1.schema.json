@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/vrp/schemas/vrp-verdict-v1.schema.json",
+  "title": "VRP Public Verdict v1",
+  "description": "Implementation-independent public verdict schema for VRP validation workflows. This schema does not expose Protected Runtime state or decision logic.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "request_id",
+    "verdict",
+    "reason_code",
+    "completed_at",
+    "evidence"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vrp.verdict/v1"
+    },
+    "request_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "VERIFIED",
+        "REJECTED",
+        "INCONCLUSIVE"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "enum": [
+        "CONTRACT_PRESERVED",
+        "EVIDENCE_VERIFIED",
+        "COMPATIBILITY_CONFIRMED",
+        "INVALID_REQUEST",
+        "INTEGRITY_FAILURE",
+        "CONTRACT_VIOLATION",
+        "INSUFFICIENT_EVIDENCE"
+      ]
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidence": {
+      "$ref": "#/$defs/evidenceReference"
+    },
+    "public_metadata": {
+      "type": "object",
+      "description": "Bounded public metadata. Protected runtime state is prohibited.",
+      "maxProperties": 32,
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "evidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "evidence_id",
+        "digest",
+        "created_at",
+        "retrieval_status"
+      ],
+      "properties": {
+        "schema": {
+          "const": "vrp.evidence-reference/v1"
+        },
+        "evidence_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9._:-]+$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "media_type": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "retrieval_status": {
+          "type": "string",
+          "enum": [
+            "AVAILABLE",
+            "RESTRICTED",
+            "EXPIRED"
+          ]
+        }
+      }
+    }
+  }
+}
