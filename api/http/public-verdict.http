@@ -1,0 +1,4 @@
+### Public Verdict
+
+GET https://pilot.example.invalid/vrp/api/v1/validation-requests/{{request_id}}/verdict
+Accept: application/json
