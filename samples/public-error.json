@@ -1,0 +1,6 @@
+{
+  "schema": "vrp.error/v1",
+  "code": "INVALID_REQUEST",
+  "message": "Validation scenario is not supported.",
+  "request_id": "4c6e3f68-8149-42d3-9e18-4e6db30f4a10"
+}
