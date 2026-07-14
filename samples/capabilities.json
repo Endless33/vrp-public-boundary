@@ -1,0 +1,11 @@
+{
+  "schema": "vrp.capabilities/v1",
+  "boundary_version": "0.1.0",
+  "capabilities": [
+    "validation.request",
+    "validation.status",
+    "validation.verdict",
+    "evidence.reference",
+    "compatibility.metadata"
+  ]
+}
