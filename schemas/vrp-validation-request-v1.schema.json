@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/vrp/schemas/vrp-validation-request-v1.schema.json",
+  "title": "VRP Validation Request v1",
+  "description": "Public validation request schema for authorized VRP evaluation environments.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "client_request_id",
+    "scenario"
+  ],
+  "properties": {
+    "schema": {
+      "const": "vrp.validation-request/v1"
+    },
+    "client_request_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "scenario": {
+      "type": "string",
+      "enum": [
+        "PUBLIC_CONTRACT_VALIDATION",
+        "EVIDENCE_INTEGRITY_VALIDATION",
+        "COMPATIBILITY_VALIDATION",
+        "PILOT_ENVIRONMENT_VALIDATION"
+      ]
+    },
+    "requested_capabilities": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "maxProperties": 32,
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean"
+        ]
+      }
+    }
+  }
+}
