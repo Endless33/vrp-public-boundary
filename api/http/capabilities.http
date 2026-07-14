@@ -1,0 +1,4 @@
+### Public Capabilities
+
+GET https://pilot.example.invalid/vrp/api/v1/capabilities
+Accept: application/json
