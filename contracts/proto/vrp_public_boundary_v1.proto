@@ -1,0 +1,169 @@
+syntax = "proto3";
+
+package vrp.public.v1;
+
+option go_package = "github.com/Endless33/vrp-public-boundary/contracts/proto/vrppublicv1";
+option java_multiple_files = true;
+option java_package = "io.vrp.public.v1";
+option java_outer_classname = "VRPPublicBoundaryV1";
+
+import "google/protobuf/timestamp.proto";
+
+service VRPPublicBoundaryService {
+  rpc GetHealth(GetHealthRequest) returns (PublicHealth);
+  rpc GetCapabilities(GetCapabilitiesRequest) returns (PublicCapabilities);
+  rpc CreateValidationRequest(CreateValidationRequest)
+      returns (ValidationRequestAccepted);
+  rpc GetValidationStatus(GetValidationStatusRequest)
+      returns (ValidationStatus);
+  rpc GetValidationVerdict(GetValidationVerdictRequest)
+      returns (PublicVerdict);
+  rpc GetEvidenceReference(GetEvidenceReferenceRequest)
+      returns (EvidenceReference);
+}
+
+message GetHealthRequest {}
+
+message GetCapabilitiesRequest {}
+
+message GetValidationStatusRequest {
+  string request_id = 1;
+}
+
+message GetValidationVerdictRequest {
+  string request_id = 1;
+}
+
+message GetEvidenceReferenceRequest {
+  string evidence_id = 1;
+}
+
+message PublicHealth {
+  string schema = 1;
+  HealthStatus status = 2;
+  google.protobuf.Timestamp observed_at = 3;
+  string boundary_version = 4;
+}
+
+enum HealthStatus {
+  HEALTH_STATUS_UNSPECIFIED = 0;
+  HEALTH_STATUS_AVAILABLE = 1;
+  HEALTH_STATUS_DEGRADED = 2;
+  HEALTH_STATUS_UNAVAILABLE = 3;
+}
+
+message PublicCapabilities {
+  string schema = 1;
+  string boundary_version = 2;
+  repeated PublicCapability capabilities = 3;
+}
+
+enum PublicCapability {
+  PUBLIC_CAPABILITY_UNSPECIFIED = 0;
+  PUBLIC_CAPABILITY_VALIDATION_REQUEST = 1;
+  PUBLIC_CAPABILITY_VALIDATION_STATUS = 2;
+  PUBLIC_CAPABILITY_VALIDATION_VERDICT = 3;
+  PUBLIC_CAPABILITY_EVIDENCE_REFERENCE = 4;
+  PUBLIC_CAPABILITY_COMPATIBILITY_METADATA = 5;
+}
+
+message CreateValidationRequest {
+  string schema = 1;
+  string client_request_id = 2;
+  ValidationScenario scenario = 3;
+  repeated string requested_capabilities = 4;
+  map<string, string> public_metadata = 5;
+}
+
+enum ValidationScenario {
+  VALIDATION_SCENARIO_UNSPECIFIED = 0;
+  VALIDATION_SCENARIO_PUBLIC_CONTRACT = 1;
+  VALIDATION_SCENARIO_EVIDENCE_INTEGRITY = 2;
+  VALIDATION_SCENARIO_COMPATIBILITY = 3;
+  VALIDATION_SCENARIO_PILOT_ENVIRONMENT = 4;
+}
+
+message ValidationRequestAccepted {
+  string schema = 1;
+  string request_id = 2;
+  ValidationState status = 3;
+  google.protobuf.Timestamp accepted_at = 4;
+}
+
+message ValidationStatus {
+  string schema = 1;
+  string request_id = 2;
+  ValidationState status = 3;
+  google.protobuf.Timestamp updated_at = 4;
+  bool verdict_available = 5;
+}
+
+enum ValidationState {
+  VALIDATION_STATE_UNSPECIFIED = 0;
+  VALIDATION_STATE_ACCEPTED = 1;
+  VALIDATION_STATE_RUNNING = 2;
+  VALIDATION_STATE_COMPLETED = 3;
+  VALIDATION_STATE_REJECTED = 4;
+  VALIDATION_STATE_FAILED = 5;
+}
+
+message PublicVerdict {
+  string schema = 1;
+  string request_id = 2;
+  Verdict verdict = 3;
+  VerdictReasonCode reason_code = 4;
+  google.protobuf.Timestamp completed_at = 5;
+  EvidenceReference evidence = 6;
+}
+
+enum Verdict {
+  VERDICT_UNSPECIFIED = 0;
+  VERDICT_VERIFIED = 1;
+  VERDICT_REJECTED = 2;
+  VERDICT_INCONCLUSIVE = 3;
+}
+
+enum VerdictReasonCode {
+  VERDICT_REASON_CODE_UNSPECIFIED = 0;
+  VERDICT_REASON_CODE_CONTRACT_PRESERVED = 1;
+  VERDICT_REASON_CODE_EVIDENCE_VERIFIED = 2;
+  VERDICT_REASON_CODE_COMPATIBILITY_CONFIRMED = 3;
+  VERDICT_REASON_CODE_INVALID_REQUEST = 4;
+  VERDICT_REASON_CODE_INTEGRITY_FAILURE = 5;
+  VERDICT_REASON_CODE_CONTRACT_VIOLATION = 6;
+  VERDICT_REASON_CODE_INSUFFICIENT_EVIDENCE = 7;
+}
+
+message EvidenceReference {
+  string schema = 1;
+  string evidence_id = 2;
+  string digest = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string media_type = 5;
+  EvidenceRetrievalStatus retrieval_status = 6;
+  map<string, string> public_metadata = 7;
+}
+
+enum EvidenceRetrievalStatus {
+  EVIDENCE_RETRIEVAL_STATUS_UNSPECIFIED = 0;
+  EVIDENCE_RETRIEVAL_STATUS_AVAILABLE = 1;
+  EVIDENCE_RETRIEVAL_STATUS_RESTRICTED = 2;
+  EVIDENCE_RETRIEVAL_STATUS_EXPIRED = 3;
+}
+
+message PublicError {
+  string schema = 1;
+  PublicErrorCode code = 2;
+  string message = 3;
+  string request_id = 4;
+}
+
+enum PublicErrorCode {
+  PUBLIC_ERROR_CODE_UNSPECIFIED = 0;
+  PUBLIC_ERROR_CODE_INVALID_REQUEST = 1;
+  PUBLIC_ERROR_CODE_UNAUTHORIZED = 2;
+  PUBLIC_ERROR_CODE_NOT_FOUND = 3;
+  PUBLIC_ERROR_CODE_CONFLICT = 4;
+  PUBLIC_ERROR_CODE_RATE_LIMITED = 5;
+  PUBLIC_ERROR_CODE_SERVICE_UNAVAILABLE = 6;
+}
