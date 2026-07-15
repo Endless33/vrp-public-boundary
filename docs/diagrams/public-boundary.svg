@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500">
+
+<rect x="40" y="60" width="220" height="90"/>
+<text x="75" y="110">External Systems</text>
+
+<rect x="340" y="60" width="220" height="90"/>
+<text x="360" y="110">Public Engineering Boundary</text>
+
+<rect x="640" y="60" width="220" height="90"/>
+<text x="700" y="110">Protected Runtime</text>
+
+<line x1="260" y1="105" x2="340" y2="105"/>
+
+<line x1="560" y1="105" x2="640" y2="105"/>
+
+<text x="150" y="260">
+Only public engineering contracts cross this boundary.
+</text>
+
+<text x="150" y="290">
+Protected implementation remains proprietary.
+</text>
+
+</svg>
