@@ -1,0 +1,19 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Public Boundary">
+    Placeholder diagram.
+
+    Future versions will illustrate:
+
+    External Systems
+
+        ↓
+
+    Public Engineering Boundary
+
+        ↓
+
+    Protected Runtime
+
+    This placeholder exists to reserve the public engineering diagram structure.
+  </diagram>
+</mxfile>
