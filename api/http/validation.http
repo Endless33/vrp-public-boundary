@@ -1,0 +1,11 @@
+### Validation Status
+
+GET https://pilot.example.invalid/api/v1/validation/{{request_id}}/status
+Accept: application/json
+
+###
+
+### Validation Verdict
+
+GET https://pilot.example.invalid/api/v1/validation/{{request_id}}/verdict
+Accept: application/json
