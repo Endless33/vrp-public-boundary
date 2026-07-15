@@ -1,4 +1,4 @@
 ### Evidence Reference
 
-GET https://pilot.example.invalid/vrp/api/v1/evidence/{{evidence_id}}
+GET https://pilot.example.invalid/api/v1/evidence/{{evidence_id}}
 Accept: application/json
