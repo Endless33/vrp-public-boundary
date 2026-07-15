@@ -1,0 +1,89 @@
+{
+  "info": {
+    "name": "VRP Public Engineering Boundary",
+    "_postman_id": "b1efef70-5d50-4d48-a9b1-000000000001",
+    "description": "Official public engineering interface for the VRP Public Engineering Boundary.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://pilot.example.invalid/api/v1"
+    },
+    {
+      "key": "requestId",
+      "value": "example-request-id"
+    },
+    {
+      "key": "evidenceId",
+      "value": "example-evidence-id"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Capabilities",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/capabilities"
+      }
+    },
+    {
+      "name": "Validation Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/validation/{{requestId}}/status"
+      }
+    },
+    {
+      "name": "Validation Verdict",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/validation/{{requestId}}/verdict"
+      }
+    },
+    {
+      "name": "Evidence Reference",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/evidence/{{evidenceId}}"
+      }
+    }
+  ]
+}
